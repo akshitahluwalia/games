@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			/*box-sizing: border-box;	*/
+		}
+		body {
+			height: 100vh;
+			width: 100vw;
+			background-color: #3b3251;
+
+
+		}
+		#container {
+			height: 100vh;
+			width: 95vw;
+			background-image: url('giphy.gif');
+			background-repeat: none;
+			background-size: cover;
+			position: absolute;
+		}
+		#ball {
+			height: 10vh;
+			width: 10vh;
+			background-image: url('meteor.png');
+			background-repeat: none;
+			background-size: contain;
+			border-radius: 50%;
+			position: absolute;
+		}
+		.steel-player {
+			width: 30px;
+			height: 350px;
+			background-color: #ad4977;
+			position: fixed;
+			border-radius: 10px;
+		}
+		.inner {
+			width: 20px;
+			height: 250px;
+			background-color: #e7ffaa;
+			border-radius: 10px;
+			margin: 0px auto;
+			margin-top: 50px; 
+		}
+	</style>
+	<title>Infinite Cage</title>
+</head>
+<body>
+		<div id="container">
+			<div id="ball">
+			</div>
+		</div>
+		<div id="player-one" class="steel-player"><div class="inner"></div></div>
+		<div id="player-two" class="steel-player"><div class="inner"></div></div>
+</body>
+<script type="text/javascript">
+	// finding elements in document
+	container = document.getElementById('container');
+	// console.log(container);
+	ball = document.getElementById('ball');
+	// console.log(ball);
+	player1 = document.getElementById('player-one');
+	// console.log(player1)
+	player2 = document.getElementById('player-two');
+	// console.log(player2)
+	// Helper Functions
+	function ballTop(){
+		// Returns the value computed within the playing area
+		return parseFloat(ball.style.top.slice(0,-2));
+	}
+	function ballLeft(){
+		// Returns the value computed within the playing area
+		return parseFloat(ball.style.left.slice(0,-2));
+	}
+	function containerTop(){
+		return parseFloat(container.style.top.slice(0,-2));
+	}
+	function containerLeft(){
+		return parseFloat(container.style.left.slice(0,-2));
+	}
+	function randrgb(){
+		r = parseInt((Math.random()*255) + 1);
+		g = parseInt((Math.random()*255) + 1);
+		b = parseInt((Math.random()*255) + 1);
+  		return "rgb(" + r +"," + g +","+ b+ ")";
+	}
+	container.style.top = "0px";
+	container.style.left = "30px";
+	ball.style.top = "0px";
+	ball.style.left = "0px";
+	// calculating playing arena
+	playingAreaTop = containerTop();
+	// console.log("playingAreaTop =>" + playingAreaTop);
+	playingAreaBottom = playingAreaTop + container.clientHeight;
+	// console.log("playingAreaBottom =>" + playingAreaBottom);
+	playingAreaLeft = containerLeft();
+	// console.log("playingAreaLeft =>" + playingAreaLeft);
+	playingAreaRight = playingAreaLeft + container.clientWidth;
+	// console.log("playingAreaRight =>" + playingAreaRight);
+	player1.style.top = "0px"
+	player1.style.left = "0px"
+	player2.style.top = "0px"
+	player2.style.left = playingAreaRight + "px"	
+	// velocity increments
+	var steps = 20;
+	vx = (Math.random() * 200)/steps;
+	vy = (Math.random() * 100)/steps;
+	var interval;
+	function move(){
+		// Executes on click;
+		// console.log(ballTop())
+		ball.style.top = (ballTop() + vy) + 'px';
+		// console.log(ballLeft())
+		ball.style.left = (ballLeft() + vx) + 'px';
+		delLeft = playingAreaLeft -(ballLeft() + player1.clientWidth);
+		delRight =  playingAreaRight - (ballLeft() + ball.clientWidth + player1.clientWidth);
+		delTop = playingAreaTop - ballTop();
+		delBottom =  playingAreaBottom - (ballTop() + ball.clientHeight);
+
+		mplayer1top = parseFloat(player1.style.top.slice(0,-2));
+		mplayer1bottom = parseFloat(player1.style.top.slice(0,-2)) + player1.clientHeight;
+		mplayer2top = parseFloat(player2.style.top.slice(0,-2));
+		mplayer2bottom = parseFloat(player2.style.top.slice(0,-2)) + player2.clientHeight;
+		
+		ballmidtop = ballTop() + ((4 * ball.clientHeight)/5)
+		ballmidbottom = ballTop() + ((1 * ball.clientHeight)/5)
+		if ( delBottom <= 0 || delTop >= 0) {
+			vy = -1 * vy ;
+			// ball.style['background-color'] = randrgb()
+		}
+		if(delLeft >= 0 || delRight <= 0){
+			if (delLeft >= 0) {
+				if (ballmidbottom <= mplayer1bottom && ballmidtop>=mplayer1top) {
+					vx = -1 * vx ;
+				}else{
+					alert("Player 2 won")
+					location.reload()
+				}
+
+			}
+			else if (delRight <= 0) {
+				if (ballmidbottom <= mplayer2bottom && ballmidtop>=mplayer2top) {
+					vx = -1 * vx ;
+				}else{
+					alert('Player 1 won')
+					location.reload()
+				}
+			}
+			// ball.style['background-color'] = randrgb()
+		}
+	}
+	document.body.addEventListener('keydown',function(event){
+		 console.log(event.keyCode);
+		 player1top = parseFloat(player1.style.top.slice(0,-2));
+		 player1bottom = parseFloat(player1.style.top.slice(0,-2)) + player1.clientHeight;
+		 player2top = parseFloat(player2.style.top.slice(0,-2));
+		 player2bottom = parseFloat(player2.style.top.slice(0,-2)) + player2.clientHeight;
+
+		 if(event.keyCode == 38){
+		 	if(player2top>playingAreaTop){
+		 		player2.style.top = (player2top - 50) + 'px';
+		 	}
+		 }
+		 if(event.keyCode == 40){
+		 	if(player2bottom<playingAreaBottom){
+		 		player2.style.top = (player2top + 50) + 'px';
+		 	}
+		 }
+		 if(event.keyCode == 87){
+		 	if(player1top>playingAreaTop){
+		 		player1.style.top = (player1top - 50) + 'px';
+		 	}
+		 }
+		 if(event.keyCode == 83){
+		 	if(player1bottom<playingAreaBottom){
+		 		player1.style.top = (player1top + 50) + 'px';
+		 	}
+		 }
+		 if(event.keyCode == 32){
+		 	if (interval != null){
+			clearInterval(interval);
+			}
+			interval = setInterval(move,0.5);
+		 }
+		});
+</script>
+</html>

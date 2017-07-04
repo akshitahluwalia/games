@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;	
+		}
+		body {
+			height: 100vh;
+			width: 100vw;
+
+
+		}
+		#container {
+			height: 400px;
+			width: 800px;
+			background-image: url('background-image.jpg');
+			background-repeat: none;
+			background-size: cover;
+			position: absolute;
+		}
+		#ball {
+			height: 20px;
+			width: 20px;
+			background-color: yellow;
+			border-radius: 50%;
+			position: absolute;
+		}
+		#start-button {
+			position: fixed;
+			bottom: 0;
+			right: 0;
+		}
+	</style>
+	<title>Infinite Cage</title>
+</head>
+<body>
+		<div id="container">
+			<div id="ball">
+				
+			</div>
+		</div>
+		<button id="start-button">Start</button>
+</body>
+<script type="text/javascript">
+	// finding elements in document
+	container = document.getElementById('container');
+	console.log(container);
+	ball = document.getElementById('ball');
+	console.log(ball);
+	start = document.getElementById('start-button');
+	// initialize inline positions
+	container.style.top = "0px";
+	container.style.left = "0px";
+	ball.style.top = "100px";
+	ball.style.left = "0px";
+	// Helper Functions
+	function ballTop(){
+		return parseFloat(ball.style.top.slice(0,-2));
+	}
+	function ballLeft(){
+		return parseFloat(ball.style.left.slice(0,-2));
+	}
+	function containerTop(){
+		return parseFloat(container.style.top.slice(0,-2));
+	}
+	function containerLeft(){
+		return parseFloat(container.style.left.slice(0,-2));
+	}
+	function randrgb(){
+		r = parseInt((Math.random()*255) + 1);
+		g = parseInt((Math.random()*255) + 1);
+		b = parseInt((Math.random()*255) + 1);
+  		return "rgb(" + r +"," + g +","+ b+ ")";
+	}
+	// calculating playing arena
+	playingAreaTop = containerTop();
+	console.log("playingAreaTop =>" + playingAreaTop);
+	playingAreaBottom = playingAreaTop + container.clientHeight;
+	console.log("playingAreaBottom =>" + playingAreaBottom);
+	playingAreaLeft = containerLeft();
+	console.log("playingAreaLeft =>" + playingAreaLeft);
+	playingAreaRight = playingAreaLeft + container.clientWidth;
+	console.log("playingAreaRight =>" + playingAreaRight);
+	// velocity increments
+	var steps = 20;
+	vx = (Math.random() * 200)/steps;
+	vy = (Math.random() * 100)/steps;
+	var interval;
+	function move(){
+		// Executes on click;
+		ball.style.top = (ballTop() + vy) + 'px';
+		console.log(ball.style.top)
+		ball.style.left = (ballLeft() + vx) + 'px';
+		console.log(ball.style.left)
+		delLeft = playingAreaLeft - ballLeft();
+		delRight =  playingAreaRight -(ballLeft() + ball.clientWidth);
+		delTop = playingAreaTop - ballTop();
+		delBottom =  playingAreaBottom - (ballTop() + ball.clientHeight);
+		if ( delBottom <= 0 || delTop >=0) {
+			vy = -1 * vy ;
+			// ball.style['background-color'] = randrgb()
+		}
+		if(delLeft >= 0 || delRight <= 0){
+			vx = -1 * vx ;
+			// ball.style['background-color'] = randrgb()
+		}
+	}
+	function playGame(event){
+		if (interval != null){
+			clearInterval(interval);
+		}
+		interval = setInterval(move,0.5);
+	}
+	start.addEventListener('click',playGame);
+</script>
+</html>

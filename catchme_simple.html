@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Catch Me if you can</title>
+	<style type="text/css">
+		* {
+			padding: 0;
+			margin: 0;
+			box-sizing: border-box;
+		}
+		body {
+			height: 100vh;
+			width: 100vw;
+		}
+		#box-element {
+			width: 50px;
+			height: 50px;
+			background-color: red;
+			position: fixed;
+			border-radius: 50%;
+		}
+	</style>
+	
+</head>
+<body>
+	<div id="box-element"></div>
+</body>
+	<script type="text/javascript">
+		element = document.getElementById('box-element');
+		// console.log(element);
+		element.style.top = "40px";
+		element.style.left = "100px";
+		fractions = 1000
+		function runAway(event){	
+			windowWidth = document.body.clientWidth;
+			console.log(windowWidth)
+			windowHeight = document.body.clientHeight
+			console.log(windowHeight)
+			// console.log(event);
+			currX = parseFloat(element.style.left.slice(0,-2));
+			// console.log(currX);
+			currY = parseFloat(element.style.top.slice(0,-2));
+			// console.log(currY);
+			newX = Math.random() * (windowWidth - element.clientWidth);
+			console.log(newX)
+			newY = Math.random() * (windowHeight - element.clientHeight);
+			console.log(newY)
+			delX = (newX - currX)/fractions;
+			// console.log(delX)
+			delY = (newY - currY)/fractions;
+			// console.log(delY)
+			for( var i = 0; i < fractions; i++){
+				tempX = currX + (i * delX);
+				console.log(tempX)
+				tempY = currY + (i * delY);
+				console.log(tempY)
+				element.style.top = tempY + 'px';
+				element.style.left = tempX + 'px';
+			}
+		}
+		element.addEventListener('mouseover',runAway);
+
+	</script>
+</html>
